@@ -13,13 +13,15 @@
   ══════════════════════════════════════════ -->
   <div id="setupScreen">
 
-    <div class="setup-hero">
-      <div class="setup-logo">🦜</div>
-      <h1 class="setup-title">FlipEnglish</h1>
-      <p class="setup-subtitle">Aprende vocabulario en inglés</p>
+    <div class="topbar">
+      <div class="topbar-logo">🦜 FlipEnglish</div>
+      <div class="topbar-controls">
+        <button class="icon-btn" id="soundToggle"  onclick="toggleSound()" title="Sonido">🔊</button>
+        <button class="icon-btn" id="darkToggle"   onclick="toggleDark()"  title="Modo oscuro">🌙</button>
+      </div>
     </div>
 
-    <!-- Streak (hidden if 0) -->
+    <!-- Streak (hidden when 0) -->
     <div class="streak-pill" id="setupStreak">
       🔥 <span id="setupStreakCount">0</span> días de racha
     </div>
@@ -29,8 +31,8 @@
       <h3 class="setup-section-title">Nivel</h3>
       <div class="option-group" id="levelGroup">
         <button class="option-btn selected" data-level="intermediate">📗 Intermedio</button>
-        <button class="option-btn" data-level="upper">📘 Interm. Alto</button>
-        <button class="option-btn" data-level="advanced">📕 Avanzado</button>
+        <button class="option-btn"          data-level="upper">📘 Interm. Alto</button>
+        <button class="option-btn"          data-level="advanced">📕 Avanzado</button>
       </div>
     </div>
 
@@ -39,13 +41,95 @@
       <h3 class="setup-section-title">Modo de práctica</h3>
       <div class="option-group" id="modeGroup">
         <button class="option-btn selected" data-mode="flashcard">🃏 Fichas</button>
-        <button class="option-btn" data-mode="quiz">🧠 Quiz</button>
-        <button class="option-btn" data-mode="writing">✍️ Escritura</button>
+        <button class="option-btn"          data-mode="quiz">🧠 Quiz</button>
+        <button class="option-btn"          data-mode="writing">✍️ Escritura</button>
       </div>
     </div>
 
     <button class="btn btn-correct start-btn" onclick="startGame()">Comenzar →</button>
 
+    <button class="stats-link" onclick="showStats()">📊 Ver estadísticas</button>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       STATS SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="statsScreen" class="hidden">
+
+    <div class="topbar">
+      <button class="back-btn" onclick="goToMenu()">← Menú</button>
+      <span class="topbar-title">Estadísticas</span>
+      <div></div>
+    </div>
+
+    <div class="stats-body">
+
+      <!-- Top tiles: streak + total -->
+      <div class="stats-tiles-row">
+        <div class="stats-tile">
+          <div class="stats-tile-icon">🔥</div>
+          <div class="stats-tile-value" id="statStreakVal">0</div>
+          <div class="stats-tile-label">Días de racha</div>
+        </div>
+        <div class="stats-tile">
+          <div class="stats-tile-icon">📚</div>
+          <div class="stats-tile-value" id="statTotalVal">0/60</div>
+          <div class="stats-tile-label">Total dominadas</div>
+        </div>
+      </div>
+
+      <!-- Per-level progress -->
+      <h3 class="stats-section-title">Progreso por nivel</h3>
+
+      <div class="stats-level-item">
+        <div class="stats-level-meta">
+          <span>📗 Intermedio</span>
+          <span id="statCountIntermediate">0 / 20</span>
+        </div>
+        <div class="stats-bar-track">
+          <div class="stats-bar-fill" id="statBarIntermediate"></div>
+        </div>
+      </div>
+
+      <div class="stats-level-item">
+        <div class="stats-level-meta">
+          <span>📘 Interm. Alto</span>
+          <span id="statCountUpper">0 / 20</span>
+        </div>
+        <div class="stats-bar-track">
+          <div class="stats-bar-fill" id="statBarUpper"></div>
+        </div>
+      </div>
+
+      <div class="stats-level-item">
+        <div class="stats-level-meta">
+          <span>📕 Avanzado</span>
+          <span id="statCountAdvanced">0 / 20</span>
+        </div>
+        <div class="stats-bar-track">
+          <div class="stats-bar-fill" id="statBarAdvanced"></div>
+        </div>
+      </div>
+
+      <!-- Accuracy -->
+      <h3 class="stats-section-title">Precisión histórica</h3>
+
+      <div class="stats-tiles-row">
+        <div class="stats-tile">
+          <div class="stats-tile-icon">🧠</div>
+          <div class="stats-tile-value" id="statQuizPct">—</div>
+          <div class="stats-tile-label">Quiz</div>
+        </div>
+        <div class="stats-tile">
+          <div class="stats-tile-icon">✍️</div>
+          <div class="stats-tile-value" id="statWritePct">—</div>
+          <div class="stats-tile-label">Escritura</div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
 
@@ -58,15 +142,17 @@
     <header>
       <button class="back-btn" onclick="goToMenu()">← Menú</button>
       <div class="logo">🦜 FlipEnglish</div>
-      <div class="streak-pill small" id="gameStreak">
-        🔥 <span id="gameStreakCount">0</span>
+      <div class="header-right">
+        <div class="streak-pill small" id="gameStreak">🔥 <span id="gameStreakCount">0</span></div>
+        <button class="icon-btn" id="gameSoundToggle" onclick="toggleSound()" title="Sonido">🔊</button>
+        <button class="icon-btn" id="gameDarkToggle"  onclick="toggleDark()"  title="Modo oscuro">🌙</button>
       </div>
     </header>
 
-    <!-- Session badges (level + mode) -->
+    <!-- Session badges -->
     <div class="session-badges">
       <span class="badge level-badge" id="levelBadge">📗 Intermedio</span>
-      <span class="badge mode-badge" id="modeBadge">🃏 Fichas</span>
+      <span class="badge mode-badge"  id="modeBadge">🃏 Fichas</span>
     </div>
 
     <!-- Progress bar -->
@@ -101,7 +187,7 @@
             <div class="card-back">
               <div class="card-emoji" id="cardEmojiBack">🍎</div>
               <h2 class="card-translation" id="cardTranslation">Traducción</h2>
-              <p class="card-example" id="cardExample">"Example sentence."</p>
+              <p class="card-example" id="cardExample">"Example."</p>
               <p class="flip-hint">Toca para volver</p>
             </div>
 
@@ -110,8 +196,8 @@
       </main>
 
       <section class="action-buttons" id="actionButtons">
-        <button class="btn btn-wrong"    onclick="markCard(false)">✗ No lo supe</button>
-        <button class="btn btn-correct"  onclick="markCard(true)">✓ Lo supe</button>
+        <button class="btn btn-wrong"   onclick="markCard(false)">✗ No lo supe</button>
+        <button class="btn btn-correct" onclick="markCard(true)">✓ Lo supe</button>
       </section>
     </div>
 
@@ -124,11 +210,7 @@
         <button class="speak-btn" onclick="speakWord(event)">🔊 Escuchar</button>
         <p class="flip-hint">Elige la traducción correcta</p>
       </div>
-
-      <div class="quiz-options" id="quizOptions">
-        <!-- Rendered by JS -->
-      </div>
-
+      <div class="quiz-options" id="quizOptions"></div>
       <div class="quiz-score-bar">
         Puntaje: <strong id="quizScore">0</strong> / <strong id="quizTotal">0</strong>
       </div>
@@ -164,7 +246,7 @@
     </div>
 
 
-    <!-- Bottom: Reset button -->
+    <!-- Reset button -->
     <div class="bottom-actions">
       <button class="reset-btn" onclick="confirmReset()">↺ Reiniciar nivel</button>
     </div>
